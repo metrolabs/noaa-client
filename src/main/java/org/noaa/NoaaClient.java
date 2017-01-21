@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.Clock;
@@ -183,8 +182,8 @@ public class NoaaClient {
                         .setStationName(items.get(HEADER_STATION))
                         .setCountry(items.get(HEADER_CTRY))
                         .setRegion(items.get(HEADER_STATE))
-                        .setLatitude(BigDecimal.valueOf(Float.parseFloat(items.get(HEADER_LAT))))
-                        .setLongitude(BigDecimal.valueOf(Float.parseFloat(items.get(HEADER_LON))))
+                        .setLatitude(Double.parseDouble(items.get(HEADER_LAT)))
+                        .setLongitude(Double.parseDouble(items.get(HEADER_LON)))
                         .setInventoryStart(startDate)
                         .setInventoryEnd(endDate)
                         .setInventoryStartYear(startDate.getYear())

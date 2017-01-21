@@ -20,7 +20,6 @@
 
 package org.noaa;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class NoaaStationHistory {
@@ -30,8 +29,8 @@ public class NoaaStationHistory {
     private String stationName;
     private String country;
     private String region;
-    private BigDecimal latitude;
-    private BigDecimal longitude;
+    private Double latitude;
+    private Double longitude;
     private LocalDate inventoryStart;
     private LocalDate inventoryEnd;
     private int inventoryYears;
@@ -92,20 +91,20 @@ public class NoaaStationHistory {
         return this;
     }
 
-    public BigDecimal getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public NoaaStationHistory setLatitude(BigDecimal latitude) {
+    public NoaaStationHistory setLatitude(Double latitude) {
         this.latitude = latitude;
         return this;
     }
 
-    public BigDecimal getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public NoaaStationHistory setLongitude(BigDecimal longitude) {
+    public NoaaStationHistory setLongitude(Double longitude) {
         this.longitude = longitude;
         return this;
     }

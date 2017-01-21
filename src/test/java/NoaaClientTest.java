@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class NoaaClientTest {
 
-    @Test
+    //@Test
     public void downloadAndUnzip() {
         String stationId = "720259-63844";
         int year = 2017;
@@ -39,7 +39,7 @@ public class NoaaClientTest {
         assertFalse(NoaaClient.getNoaaStationHistory().isEmpty());
     }
 
-    @Test
+    //@Test
     public void downloadNoaaStationHistory() {
         assertNotNull(NoaaClient.downloadNoaaStationHistory());
     }
