@@ -19,11 +19,9 @@
  */
 
 import org.junit.jupiter.api.Test;
-import org.noaa.IntegratedSurfaceData;
 import org.noaa.NoaaClient;
 
-import java.util.List;
-
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class NoaaClientTest {
@@ -33,13 +31,16 @@ public class NoaaClientTest {
         String stationId = "720259-63844";
         int year = 2017;
 
-        System.out.println("###########################################################");
-        System.out.println("Loading Station [" + stationId + "]");
-        System.out.println("Loading YEAR [" + year + "] ... ");
+        assertNotNull(NoaaClient.getIntegratedSurfaceData(year, stationId));
+    }
 
-        List<IntegratedSurfaceData> integratedSurfaceDataList;
-        integratedSurfaceDataList = NoaaClient.getIntegratedSurfaceData(year, stationId);
+    @Test
+    public void getNoaaStationHistory() {
+        assertFalse(NoaaClient.getNoaaStationHistory().isEmpty());
+    }
 
-        assertNotNull(integratedSurfaceDataList);
+    @Test
+    public void downloadNoaaStationHistory() {
+        assertNotNull(NoaaClient.downloadNoaaStationHistory());
     }
 }
