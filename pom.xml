@@ -59,31 +59,6 @@
         </extensions>
     </build>
 
-    <repositories>
-        <repository>
-            <id>${project.artifactId}-release</id>
-            <name>S3 Release Repository for ${project.artifactId}</name>
-            <url>s3://metro-maven/release</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>${project.artifactId}-snapshot</id>
-            <name>S3 Snapshot Repository for ${project.artifactId}</name>
-            <url>s3://metro-maven/snapshot</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <reporting>
         <plugins>
             <plugin>
