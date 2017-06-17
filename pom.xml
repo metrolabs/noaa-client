@@ -39,12 +39,10 @@
     <distributionManagement>
         <repository>
             <id>aws-release</id>
-            <name>S3 Release Repository for ${project.artifactId}</name>
             <url>s3://metro-maven/release</url>
         </repository>
         <snapshotRepository>
             <id>aws-snapshot</id>
-            <name>S3 Snapshot Repository for ${project.artifactId}</name>
             <url>s3://metro-maven/snapshot</url>
         </snapshotRepository>
     </distributionManagement>
