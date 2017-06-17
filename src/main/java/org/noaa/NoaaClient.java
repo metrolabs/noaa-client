@@ -20,13 +20,9 @@
 
 package org.noaa;
 
-import com.google.common.io.CharStreams;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.Clock;
@@ -73,13 +69,17 @@ public class NoaaClient {
 
         String data = null;
         URLConnection connection;
+        StringBuilder builder = new StringBuilder();
         try {
             URL url = new URL(fileUrl);
             connection = url.openConnection();
             connection.addRequestProperty("User-Agent", "Mozilla/4.0");
 
             try (final Reader reader = new InputStreamReader(new GZIPInputStream(connection.getInputStream()))) {
-                data = CharStreams.toString(reader);
+                int c;
+                while ((c = reader.read()) != -1) {
+                    builder.append((char) c);
+                }
             }
             catch (Exception e) {
                 LOG.warn(e.getMessage(), e.getCause());
@@ -92,7 +92,7 @@ public class NoaaClient {
             LOG.warn(e.getMessage(), e.getCause());
         }
 
-        return data;
+        return builder.toString();
     }
 
     /**
@@ -146,24 +146,28 @@ public class NoaaClient {
     }
 
     public static String downloadNoaaStationHistory() {
-        try(InputStream in = openNoaaStationHistory()) {
-            final Reader reader = new InputStreamReader(in);
-            return CharStreams.toString(reader);
+        StringBuilder builder = new StringBuilder();
+        try(final Reader reader = new InputStreamReader(openNoaaStationHistory())) {
+            int c;
+            while ((c = reader.read()) != -1) {
+                builder.append((char) c);
+            }
         } catch (IOException e) {
             LOG.error(e.getMessage(), e.getCause());
         }
 
-        return null;
+        return builder.toString();
     }
 
     public static List<NoaaStationHistory> getNoaaStationHistory() {
         LOG.info("Downloading {}", ISD_HISTORY);
         List<NoaaStationHistory> noaaStationHistories = new ArrayList<>();
-        try (InputStream in = openNoaaStationHistory()) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(openNoaaStationHistory()))) {
             LOG.info("Downloading Completed");
             List<String> items;
             LocalDate startDate, endDate, curDate = LocalDate.now(Clock.systemUTC());
-            for (String line : CharStreams.readLines(new InputStreamReader(in))) {
+            String line;
+            while(null != (line = reader.readLine())) {
                 items = parseLine(line);
                 if (items.get(HEADER_USAF).equals("USAF")) continue;
                 if (items.get(HEADER_CTRY) == null || items.get(HEADER_CTRY).isEmpty()) continue;
