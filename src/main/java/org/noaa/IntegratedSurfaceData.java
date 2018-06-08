@@ -20,6 +20,9 @@
 
 package org.noaa;
 
+import org.apache.commons.csv.CSVRecord;
+
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -142,6 +145,88 @@ public class IntegratedSurfaceData {
 
     }
 
+    public IntegratedSurfaceData(CSVRecord c) {
+        LocalDateTime date = DataHelper.toDate(c.get("DATE"));
+        observationYear = date.getYear();
+        observationMonth = date.getMonthValue();
+        observationDay = date.getDayOfMonth();
+        observationHour = date.getHour();
+        /*
+         * TMP: AIR-TEMPERATURE-OBSERVATION
+         * AIR TEMPERATURE
+         *  MIN: -0932 MAX: +0618 UNITS: Degrees Celsius
+         *  SCALING FACTOR: 10
+         *  INDEX: 0
+         *
+         * air temp.   quality code
+         * ---------- -------------
+         * -0021      1
+         */
+        String[] TMP = c.get("TMP").split(",");
+        airTemperature = DataHelper.toDouble(TMP[0], 10d);
+        /*
+         * DEW: DEW POINT AIR-TEMPERATURE-OBSERVATION
+         * AIR TEMPERATURE
+         *  MIN: -0932 MAX: +0618 UNITS: Degrees Celsius
+         *  SCALING FACTOR: 10
+         *  INDEX: 0
+         *
+         * dew point  quality code
+         * ---------- -------------
+         * -0021      1
+         */
+        String[] DEW = c.get("DEW").split(",");
+        dewPointTemperature = DataHelper.toDouble(DEW[0], 10d);
+        /*
+         * SLP: ATMOSPHERIC-PRESSURE-OBSERVATION
+         * The air pressure relative to Mean Sea Level (MSL).
+         *
+         * SEA LEVEL PRESSURE
+         *  MIN: 08600 MAX: 10900 UNITS: Hectopascals
+         *  SCALING FACTOR: 10
+         *  INDEX: 0
+         *
+         * dew point  quality code
+         * ---------- -------------
+         * 10070      1
+         */
+        String[] SLP = c.get("SLP").split(",");
+        seaLevelPressure = DataHelper.toDouble(SLP[0], 10d);
+        /*
+         * WND: WIND-OBSERVATION
+         *
+         * DIRECTION ANGLE
+         *  MIN: 001 MAX: 360 UNITS: Angular Degrees
+         *  SCALING FACTOR: 1
+         *  INDEX: 0
+         *
+         * SPEED RATE
+         *  MIN: 0000 MAX: 0900 UNITS: meters per second
+         *  SCALING FACTOR: 10
+         *  INDEX: 3
+         *
+         * direction angle  direction quality code  type code        speed rate  speed quality code
+         * ---------------- ----------------------- ---------------- ----------- -------------------
+         * 145              1                       N                0086        1
+         */
+        String[] WND = c.get("WND").split(",");
+        windDirection = DataHelper.toDouble(WND[0]);
+        windSpeedRate = DataHelper.toDouble(WND[3], 10d);
+        /*
+         * VIS: SKY-CONDITION-OBSERVATION
+         *
+         * CEILING HEIGHT DIMENSION
+         *  MIN: 00000 MAX: 22000 UNITS: Meters
+         *  SCALING FACTOR: 1
+         *  INDEX: 0
+         *
+         */
+        String[] VIS = c.get("VIS").split(",");
+        skyCondition = DataHelper.toDouble(VIS[0]);
+        precipitationDepthOneHour = 0d;
+        precipitationDepthSixHour = 0d;
+    }
+
     public int getObservationYear() {
         return observationYear;
     }
@@ -250,6 +335,24 @@ public class IntegratedSurfaceData {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return "IntegratedSurfaceData{" +
+                "observationYear=" + observationYear +
+                ", observationMonth=" + observationMonth +
+                ", observationDay=" + observationDay +
+                ", observationHour=" + observationHour +
+                ", airTemperature=" + airTemperature +
+                ", dewPointTemperature=" + dewPointTemperature +
+                ", seaLevelPressure=" + seaLevelPressure +
+                ", windDirection=" + windDirection +
+                ", windSpeedRate=" + windSpeedRate +
+                ", skyCondition=" + skyCondition +
+                ", precipitationDepthOneHour=" + precipitationDepthOneHour +
+                ", precipitationDepthSixHour=" + precipitationDepthSixHour +
+                "}\n";
+    }
+
     public enum SkyCondition {
         NONE                (0, "None, SKC or CLR"),
         ONE_OKTA            (1, "1/10 or less but not zero"),
@@ -339,12 +442,24 @@ public class IntegratedSurfaceData {
             return d;
         }
 
+        public static Double toDouble(String value, double scale) {
+            Double x = 9999d;
+            Double d = Double.valueOf(value);
+            if(d.compareTo(x) == 0) return null;
+
+            return d/scale;
+        }
+
         public static Integer toInteger(String value) {
             Integer x = -9999;
             Integer d = Integer.parseInt(value);
             if(d.compareTo(x) == 0) return null;
 
             return d;
+        }
+
+        public static LocalDateTime toDate(String value) {
+            return LocalDateTime.parse(value);
         }
     }
 }

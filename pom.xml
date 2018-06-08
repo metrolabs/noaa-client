@@ -18,6 +18,8 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <spring-cloud.version>Dalston.RELEASE</spring-cloud.version>
+        <org.apache.commons.version>1.5</org.apache.commons.version>
+        <junit.version>4.12</junit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
@@ -26,6 +28,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>${org.apache.commons.version}</version>
         </dependency>
 
         <!-- Testing -->
@@ -43,16 +50,6 @@
             <url>https://maven.pivotenergy.io/artifactory/metrolabs</url>
         </repository>
     </distributionManagement>
-
-    <build>
-        <extensions>
-            <extension>
-                <groupId>org.springframework.build</groupId>
-                <artifactId>aws-maven</artifactId>
-                <version>5.0.0.RELEASE</version>
-            </extension>
-        </extensions>
-    </build>
 
     <reporting>
         <plugins>

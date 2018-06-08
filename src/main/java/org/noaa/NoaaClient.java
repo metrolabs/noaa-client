@@ -20,6 +20,9 @@
 
 package org.noaa;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
@@ -35,8 +38,8 @@ import java.util.StringTokenizer;
 import java.util.zip.GZIPInputStream;
 
 public class NoaaClient {
-    private static org.slf4j.Logger LOG = LoggerFactory.getLogger(NoaaClient.class);
-    public static final String BASE_URL = "ftp://ftp.ncdc.noaa.gov/pub/data/noaa";
+    private static Logger LOG = LoggerFactory.getLogger(NoaaClient.class);
+    public static final String BASE_URL = "https://www.ncei.noaa.gov/data/global-hourly/access/";
     public static final String ISD_HISTORY = "isd-history.csv";
     public static final String DATA_SOURCE = "NOAA_ISD_LITE";
 
@@ -62,7 +65,7 @@ public class NoaaClient {
      * @param station the station id
      * @return Delimited string
      */
-    public static String downloadIntegratedSurfaceData(int year, String station) {
+    public static String downloadIntegratedSurfaceDataFtp(int year, String station) {
         String fileName = String.format("%s-%d.gz", station, year);
         String path = "isd-lite";
         String fileUrl = String.format("%s/%s/%d/%s", BASE_URL, path, year, fileName);
@@ -80,6 +83,38 @@ public class NoaaClient {
                 while ((c = reader.read()) != -1) {
                     builder.append((char) c);
                 }
+            }
+            catch (Exception e) {
+                LOG.warn(e.getMessage(), e.getCause());
+            }
+            finally {
+                connection.getInputStream().close();
+            }
+        }
+        catch (Exception e) {
+            LOG.warn(e.getMessage(), e.getCause());
+        }
+
+        return builder.toString();
+    }
+
+    public static String downloadIntegratedSurfaceData(int year, String station) {
+        String fileName = station.replace("-", "") + ".csv";
+        String fileUrl = String.format("%s/%d/%s", BASE_URL, year, fileName);
+
+        URLConnection connection;
+        StringBuilder builder = new StringBuilder();
+        List<IntegratedSurfaceData> integratedSurfaceDataList = new ArrayList<>();
+        try {
+            URL url = new URL(fileUrl);
+            connection = url.openConnection();
+            connection.addRequestProperty("User-Agent", "Mozilla/4.0");
+            try (final Reader reader = new InputStreamReader(connection.getInputStream())) {
+                Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(reader);
+                for (CSVRecord record : records) {
+                    integratedSurfaceDataList.add(new IntegratedSurfaceData(record));
+                }
+
             }
             catch (Exception e) {
                 LOG.warn(e.getMessage(), e.getCause());
