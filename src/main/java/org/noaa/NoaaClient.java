@@ -53,7 +53,7 @@ public class NoaaClient {
         }
         catch (Exception e) {
             LOG.error("Exception processing {} data", DATA_SOURCE);
-            LOG.warn(e.getMessage(), e.getCause());
+            LOG.error(e.getMessage(), e);
         }
 
         return collection.values();
