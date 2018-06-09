@@ -24,8 +24,8 @@ import org.apache.commons.csv.CSVRecord;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class IntegratedSurfaceData {
     /**
@@ -112,38 +112,6 @@ public class IntegratedSurfaceData {
      * 
      */
     private Double precipitationDepthSixHour;
-
-    public IntegratedSurfaceData(List<String> list) {
-        observationYear = DataHelper.toInteger(list.get(0));
-        observationMonth = DataHelper.toInteger(list.get(1));
-        observationDay = DataHelper.toInteger(list.get(2));
-        observationHour = DataHelper.toInteger(list.get(3));
-        airTemperature = DataHelper.toDouble(list.get(4));
-        dewPointTemperature = DataHelper.toDouble(list.get(5));
-        seaLevelPressure = DataHelper.toDouble(list.get(6));
-        windDirection = DataHelper.toDouble(list.get(7));
-        windSpeedRate = DataHelper.toDouble(list.get(8));
-        skyCondition = DataHelper.toDouble(list.get(9));
-        precipitationDepthOneHour = DataHelper.toDouble(list.get(10));
-        precipitationDepthSixHour = DataHelper.toDouble(list.get(11));
-
-    }
-
-    public IntegratedSurfaceData(String line) {
-        observationYear = DataHelper.toInteger(DataHelper.OBSERVATION_YEAR, line);
-        observationMonth = DataHelper.toInteger(DataHelper.OBSERVATION_MONTH, line);
-        observationDay = DataHelper.toInteger(DataHelper.OBSERVATION_DAY, line);
-        observationHour = DataHelper.toInteger(DataHelper.OBSERVATION_HOUR, line);
-        airTemperature = DataHelper.toDouble(DataHelper.AIR_TEMPERATURE, line);
-        dewPointTemperature = DataHelper.toDouble(DataHelper.DEW_POINT_TEMPERATURE, line);
-        seaLevelPressure = DataHelper.toDouble(DataHelper.SEA_LEVEL_PRESSURE, line);
-        windDirection = DataHelper.toDouble(DataHelper.WIND_DIRECTION, line);
-        windSpeedRate = DataHelper.toDouble(DataHelper.WIND_SPEED_RATE, line);
-        skyCondition = DataHelper.toDouble(DataHelper.SKY_CONDITION, line);
-        precipitationDepthOneHour = DataHelper.toDouble(DataHelper.PRECIPITATION_DEPTH_ONE_HOUR, line);
-        precipitationDepthSixHour = DataHelper.toDouble(DataHelper.PRECIPITATION_DEPTH_SIX_HOUR, line);
-
-    }
 
     public IntegratedSurfaceData(CSVRecord c) {
         LocalDateTime date = DataHelper.toDate(c.get("DATE"));
@@ -335,24 +303,6 @@ public class IntegratedSurfaceData {
         return this;
     }
 
-    @Override
-    public String toString() {
-        return "IntegratedSurfaceData{" +
-                "observationYear=" + observationYear +
-                ", observationMonth=" + observationMonth +
-                ", observationDay=" + observationDay +
-                ", observationHour=" + observationHour +
-                ", airTemperature=" + airTemperature +
-                ", dewPointTemperature=" + dewPointTemperature +
-                ", seaLevelPressure=" + seaLevelPressure +
-                ", windDirection=" + windDirection +
-                ", windSpeedRate=" + windSpeedRate +
-                ", skyCondition=" + skyCondition +
-                ", precipitationDepthOneHour=" + precipitationDepthOneHour +
-                ", precipitationDepthSixHour=" + precipitationDepthSixHour +
-                "}\n";
-    }
-
     public enum SkyCondition {
         NONE                (0, "None, SKC or CLR"),
         ONE_OKTA            (1, "1/10 or less but not zero"),
@@ -404,35 +354,6 @@ public class IntegratedSurfaceData {
     }
 
     public static class DataHelper {
-        public static final int[] OBSERVATION_YEAR     = {1, 4};
-        public static final int[] OBSERVATION_MONTH    = {6, 7};
-        public static final int[] OBSERVATION_DAY      = {9, 11};
-        public static final int[] OBSERVATION_HOUR     = {12, 13};
-        public static final int[] AIR_TEMPERATURE      = {14, 19};
-        public static final int[] SEA_LEVEL_PRESSURE   = {26, 31};
-        public static final int[] WIND_DIRECTION       = {32, 37};
-        public static final int[] WIND_SPEED_RATE      = {38, 43};
-        public static final int[] SKY_CONDITION        = {44, 49};
-        public static final int[] DEW_POINT_TEMPERATURE        = {20, 24};
-        public static final int[] PRECIPITATION_DEPTH_ONE_HOUR = {50, 55};
-        public static final int[] PRECIPITATION_DEPTH_SIX_HOUR = {56, 61};
-
-
-        public static Double toDouble(int[] pos, String line) {
-            Double x = -9999.0;
-            Double d = Double.valueOf(line.substring(pos[0], pos[1]).trim());
-            if(d.compareTo(x) == 0) return null;
-
-            return d;
-        }
-
-        public static Integer toInteger(int[] pos, String line) {
-            Integer x = -9999;
-            Integer d = Integer.parseInt(line.substring(pos[0]-1, pos[1]-1).trim());
-            if(d.compareTo(x) == 0) return null;
-
-            return d;
-        }
 
         public static Double toDouble(String value) {
             Double x = -9999.0;
@@ -450,16 +371,43 @@ public class IntegratedSurfaceData {
             return d/scale;
         }
 
-        public static Integer toInteger(String value) {
-            Integer x = -9999;
-            Integer d = Integer.parseInt(value);
-            if(d.compareTo(x) == 0) return null;
-
-            return d;
-        }
-
         public static LocalDateTime toDate(String value) {
             return LocalDateTime.parse(value);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "IntegratedSurfaceData{" +
+                "observationYear=" + observationYear +
+                ", observationMonth=" + observationMonth +
+                ", observationDay=" + observationDay +
+                ", observationHour=" + observationHour +
+                ", airTemperature=" + airTemperature +
+                ", dewPointTemperature=" + dewPointTemperature +
+                ", seaLevelPressure=" + seaLevelPressure +
+                ", windDirection=" + windDirection +
+                ", windSpeedRate=" + windSpeedRate +
+                ", skyCondition=" + skyCondition +
+                ", precipitationDepthOneHour=" + precipitationDepthOneHour +
+                ", precipitationDepthSixHour=" + precipitationDepthSixHour +
+                "}\n";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IntegratedSurfaceData that = (IntegratedSurfaceData) o;
+        return observationYear == that.observationYear &&
+                observationMonth == that.observationMonth &&
+                observationDay == that.observationDay &&
+                observationHour == that.observationHour;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(observationYear, observationMonth, observationDay, observationHour);
     }
 }

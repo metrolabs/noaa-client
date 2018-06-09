@@ -25,7 +25,7 @@ import org.noaa.NoaaClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import java.util.Collection;
 
 public class NoaaClientTest {
     private Logger LOG = LoggerFactory.getLogger(NoaaClientTest.class);
@@ -34,10 +34,17 @@ public class NoaaClientTest {
     public void downloadIntegratedSurfaceData() {
         int year = 2018;
         String station = "720545-00169";
-        String data = NoaaClient.downloadIntegratedSurfaceData(year, station);
-        Assert.assertNotNull(data);
 
-        List<IntegratedSurfaceData> dataList = NoaaClient.getIntegratedSurfaceData(data);
-        LOG.info(dataList.get(1).toString());
+        Collection<IntegratedSurfaceData> collection = NoaaClient.getIntegratedSurfaceData(year, station);
+        IntegratedSurfaceData i = collection.iterator().next();
+        Assert.assertTrue(i.getObservationYear() == 2018);
+        Assert.assertTrue(i.getObservationMonth() == 1);
+        Assert.assertTrue(i.getObservationDay() == 1);
+        Assert.assertTrue(i.getObservationHour() == 0);
+        Assert.assertTrue(i.getAirTemperature() == -15.0);
+        Assert.assertTrue(i.getDewPointTemperature() == -24.0);
+        Assert.assertTrue(i.getWindDirection() == 310.0);
+        Assert.assertTrue(i.getWindSpeedRate() == 3.6);
+        Assert.assertTrue(i.getSkyCondition() == 16093.0);
     }
 }
