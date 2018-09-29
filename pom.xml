@@ -29,6 +29,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -43,14 +44,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <repository>
-            <id>maven.pivotenergy.io</id>
-            <name>maven.pivotenergy.io</name>
-            <url>https://maven.pivotenergy.io/artifactory/metrolabs</url>
-        </repository>
-    </distributionManagement>
 
     <reporting>
         <plugins>

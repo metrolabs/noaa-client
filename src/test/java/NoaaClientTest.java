@@ -22,14 +22,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.noaa.IntegratedSurfaceData;
 import org.noaa.NoaaClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
 public class NoaaClientTest {
-    private Logger LOG = LoggerFactory.getLogger(NoaaClientTest.class);
-
     @Test
     public void downloadIntegratedSurfaceData() {
         int year = 2018;
